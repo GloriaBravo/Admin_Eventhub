@@ -1,0 +1,64 @@
+.event-section {
+  background-color: var(--card-color);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px #ddd;
+  color: var(--text-color);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  color: var(--text-color); /* 👈 importante */
+}
+
+thead {
+  background-color: var(--header-bg); /* mejora el contraste */
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.status.published {
+  color: white;
+  background-color: #28a745;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status.draft {
+  color: white;
+  background-color: #ffc107;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.actions {
+  color: #007bff;
+  cursor: pointer;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  color: var(--text-color);
+}
+
+.new-event-btn {
+  padding: 10px 20px;
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+

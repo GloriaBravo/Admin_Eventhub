@@ -1,0 +1,69 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --card-color: #f5f5f5;
+  --input-bg: #ffffff;
+  --input-border: #ccc;
+  --btn-bg: #007bff;
+  --btn-text: #ffffff;
+  --header-bg: #eaeaea; /* ✅ agregado */
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --card-color: #1e1e1e;
+  --input-bg: #2a2a2a;
+  --input-border: #444;
+  --btn-bg: #1e90ff;
+  --btn-text: #ffffff;
+  --header-bg: #2a2a2a; /* ✅ agregado */
+}
+
+
+/* === Global === */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* === Botones === */
+button {
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* === Inputs y Selects === */
+input,
+select,
+textarea {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--input-border);
+  padding: 8px;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+}
+
+

@@ -1,0 +1,31 @@
+.admin-container {
+    display: flex;
+    font-family: sans-serif;
+    height: 100vh;
+  }
+  
+  .main-panel {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ffffff;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .tabs button {
+    padding: 8px 16px;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .tabs .active-tab {
+    background: #007bff;
+    color: white;
+  }
+  
