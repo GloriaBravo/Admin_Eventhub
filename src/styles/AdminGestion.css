@@ -1,0 +1,82 @@
+.admin-form-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  color: #000000;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.admin-form-container h2,
+.admin-form-container h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #121417;
+}
+
+.admin-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.admin-form input {
+  padding: 10px;
+  border: 1px solid #d1dbe5;
+  border-radius: 6px;
+  background-color: #f7fafa;
+  color: #121417;
+  font-size: 14px;
+}
+
+.admin-form input:focus {
+  outline: none;
+  border-color: #1a7de5;
+}
+
+.admin-form button {
+  grid-column: span 2;
+  padding: 12px;
+  background-color: #1a7de5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.admin-table {
+  width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #e5e8eb;
+  text-align: left;
+}
+
+.admin-table th {
+  background-color: #f0f2f5;
+  color: #121417;
+}
+
+.admin-table td button {
+  background-color: #28bfe3;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-table td button:hover {
+  background-color: #1a7de5;
+}
+

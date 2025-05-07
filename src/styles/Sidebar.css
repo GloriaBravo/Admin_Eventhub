@@ -50,7 +50,10 @@
 }
 
 .sidebar a:hover {
-  color: var(--btn-bg);
+  color: var(--btn-text);
+  background-color: var(--btn-hover-bg);
+  padding: 10px 12px;
+  border-radius: 6px;
 }
 
 .sidebar a.active {
@@ -93,7 +96,8 @@
   border-top: 1px solid #ccc;
 }
 
-.sidebar-footer button {
+.sidebar-footer button,
+.admin-button {
   padding: 10px 15px;
   font-size: 14px;
   background-color: var(--btn-bg);
@@ -104,7 +108,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .logout-btn {
@@ -118,6 +124,7 @@
 .admin-button:hover,
 .sidebar-footer button:hover {
   background-color: var(--btn-hover-bg);
+  color: #ffffff; /* ✅ Asegura que el texto se vea sobre azul */
 }
 
 .user-name {

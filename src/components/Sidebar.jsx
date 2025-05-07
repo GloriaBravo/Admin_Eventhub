@@ -1,27 +1,22 @@
 // src/assets/components/Sidebar.jsx
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { ThemeContext } from "../context/ThemeContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
   faClipboardList,
   faCalendarAlt,
   faUsers,
-  faSun,
-  faMoon,
   faUserShield,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Sidebar.css";
 
 const Sidebar = ({ onLogout }) => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
   const [userName, setUserName] = useState("");
   const location = useLocation();
 
-  // Leer nombre del usuario desde localStorage
   useEffect(() => {
     const sessionData = JSON.parse(localStorage.getItem("session"));
     if (sessionData?.name) {
@@ -29,7 +24,6 @@ const Sidebar = ({ onLogout }) => {
     }
   }, []);
 
-  // Cerrar menú cuando cambia de ruta
   useEffect(() => {
     closeMenu();
   }, [location.pathname]);
@@ -49,7 +43,9 @@ const Sidebar = ({ onLogout }) => {
       </button>
 
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
-        <button className="close-btn" onClick={closeMenu}>✖</button>
+        <button className="close-btn" onClick={closeMenu}>
+          ✖
+        </button>
 
         {/* Encabezado con logo y nombre */}
         <div className="sidebar-header">
@@ -83,20 +79,17 @@ const Sidebar = ({ onLogout }) => {
 
         {/* Footer del Sidebar */}
         <div className="sidebar-footer">
-          <button className="theme-toggle-btn" onClick={toggleTheme}>
-            <FontAwesomeIcon icon={theme === "light" ? faMoon : faSun} />{" "}
-            {theme === "light" ? "Oscuro" : "Claro"}
-          </button>
-
-          <p className="user-name">👋 Bienvenido, <strong>{userName || "Administrador"}</strong></p>
+          <p className="user-name">
+            👋 Bienvenido, <strong>{userName || "Administrador"}</strong>
+          </p>
 
           <button className="logout-btn" onClick={handleLogout}>
             <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar sesión
           </button>
 
-          <button className="admin-button">
+          <NavLink to="/gestionar-administradores" className="admin-button">
             <FontAwesomeIcon icon={faUserShield} /> Gestionar Administradores
-          </button>
+          </NavLink>
         </div>
       </div>
     </>
