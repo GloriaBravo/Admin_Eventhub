@@ -1,7 +1,7 @@
 .sidebar {
-  width: 240px;
+  width: 200px;
   background-color: var(--card-color);
-  padding: 24px;
+  padding: 16px;
   border-right: 1px solid #ddd;
   height: 100vh;
   transition: transform 0.3s ease;

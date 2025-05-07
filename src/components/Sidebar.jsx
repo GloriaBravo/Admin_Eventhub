@@ -1,4 +1,4 @@
-// src/assets/components/Sidebar.jsx
+// Sidebar.jsx actualizado con ancho reducido y correcciones de hover
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,50 +43,23 @@ const Sidebar = ({ onLogout }) => {
       </button>
 
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
-        <button className="close-btn" onClick={closeMenu}>
-          ✖
-        </button>
+        <button className="close-btn" onClick={closeMenu}>✖</button>
 
-        {/* Encabezado con logo y nombre */}
         <div className="sidebar-header">
           <img src="/logo.svg" alt="EventHub Logo" className="logo" />
           <span className="app-name">EventHub</span>
         </div>
 
-        {/* Navegación */}
         <ul className="nav-links">
-          <li>
-            <NavLink to="/dashboard">
-              <FontAwesomeIcon icon={faChartBar} /> Dashboard
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/panel">
-              <FontAwesomeIcon icon={faClipboardList} /> Panel de Eventos
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/eventos">
-              <FontAwesomeIcon icon={faCalendarAlt} /> Gestión de Eventos
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/usuarios">
-              <FontAwesomeIcon icon={faUsers} /> Gestión de Usuarios
-            </NavLink>
-          </li>
+          <li><NavLink to="/dashboard"><FontAwesomeIcon icon={faChartBar} /> Dashboard</NavLink></li>
+          <li><NavLink to="/panel"><FontAwesomeIcon icon={faClipboardList} /> Panel de Eventos</NavLink></li>
+          <li><NavLink to="/eventos"><FontAwesomeIcon icon={faCalendarAlt} /> Gestión de Eventos</NavLink></li>
+          <li><NavLink to="/usuarios"><FontAwesomeIcon icon={faUsers} /> Gestión de Usuarios</NavLink></li>
         </ul>
 
-        {/* Footer del Sidebar */}
         <div className="sidebar-footer">
-          <p className="user-name">
-            👋 Bienvenido, <strong>{userName || "Administrador"}</strong>
-          </p>
-
-          <button className="logout-btn" onClick={handleLogout}>
-            <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar sesión
-          </button>
-
+          <p className="user-name">👋 Bienvenido, <strong>{userName || "Administrador"}</strong></p>
+          <button className="logout-btn" onClick={handleLogout}><FontAwesomeIcon icon={faSignOutAlt} /> Cerrar sesión</button>
           <NavLink to="/gestionar-administradores" className="admin-button">
             <FontAwesomeIcon icon={faUserShield} /> Gestionar Administradores
           </NavLink>

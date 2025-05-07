@@ -1,6 +1,11 @@
 // src/App.jsx
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 // Importación de vistas o páginas
 import DashboardAdmin from "./pages/DashboardAdmin";
@@ -10,6 +15,7 @@ import AdminPanel from "./pages/AdminPanel";
 import Login from "./pages/Login";
 import EventDetail from "./pages/EventDetail";
 import AdminGestion from "./pages/AdminGestion"; // ✅ nuevo
+
 
 // Componentes compartidos
 import Sidebar from "./components/Sidebar";
@@ -41,7 +47,11 @@ function App() {
               <Route path="/eventos" element={<EventManagement />} />
               <Route path="/panel" element={<AdminPanel />} />
               <Route path="/eventos/:id" element={<EventDetail />} />
-              <Route path="/gestionar-administradores" element={<AdminGestion />} /> {/* ✅ nueva ruta */}
+              <Route
+                path="/gestionar-administradores"
+                element={<AdminGestion />}
+              />{" "}
+              {/* ✅ nueva ruta */}
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="*" element={<Navigate to="/dashboard" />} />
             </Routes>
@@ -58,4 +68,3 @@ function App() {
 }
 
 export default App;
-
