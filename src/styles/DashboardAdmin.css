@@ -1,0 +1,101 @@
+.dashboard-wrapper {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.graph-panel {
+  flex: 1 1 600px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  min-width: 300px;
+}
+
+.chart-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.chart-buttons button {
+  padding: 10px 14px;
+  font-size: 14px;
+  background-color: #1A7DE5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.chart-buttons button:hover {
+  background-color: #156cc2;
+}
+
+.download-btn {
+  margin-top: 10px;
+  background-color: #28BFE3;
+}
+
+.download-btn:hover {
+  background-color: #1a9ec0;
+}
+
+/* Panel de usuarios a la derecha */
+.user-data-panel {
+  flex: 1 1 300px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.user-data-panel h4 {
+  margin-bottom: 12px;
+  color: #121417;
+}
+
+.user-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e8eb;
+  font-size: 14px;
+  color: #444;
+}
+
+.user-item strong {
+  color: #121417;
+}
+
+.summary-section {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #121417;
+}
+
+@media (max-width: 960px) {
+  .chart-container {
+    flex-direction: column;
+  }
+
+  .graph-panel,
+  .user-data-panel {
+    width: 100%;
+  }
+}
