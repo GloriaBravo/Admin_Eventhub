@@ -1,101 +1,81 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
+import "../styles/EventDetail.css";
 
 const EventDetail = () => {
-  const { id } = useParams(); // ID desde la URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const { events, updateEvent } = useContext(AdminContext);
 
-  // Buscar evento por ID
-  const isNew = id === "nuevo";
-
-  const selected = isNew
-    ? {
-        id: Date.now(),
-        title: "",
-        date: "",
-        type: "",
-        status: "Draft",
-        registrants: 0,
-        rating: 0,
-      }
-    : events.find((e) => e.id.toString() === id);
-
-  // Estado local editable
-  const [event, setEvent] = useState({ ...selected });
+  const event = events.find((e) => e.id.toString() === id);
+  const [status, setStatus] = useState(event?.status || "Draft");
 
   useEffect(() => {
-    if (!selected) navigate("/panel");
-  }, [selected]);
+    if (!event) navigate("/panel");
+  }, [event, navigate]);
+
+  const toggleBlock = () => {
+    const newStatus = status === "Blocked" ? "Published" : "Blocked";
+    setStatus(newStatus);
+    updateEvent({ ...event, status: newStatus });
+  };
 
   if (!event) return <p>Cargando evento...</p>;
 
-  // Guardar cambios
-  const handleSave = () => {
-    updateEvent(event);
-    alert("Evento actualizado");
-    navigate("/panel");
-  };
-
-  // Cambiar estado entre bloqueado/publicado
-  const toggleBlock = () => {
-    const newStatus = event.status === "Blocked" ? "Published" : "Blocked";
-    setEvent({ ...event, status: newStatus });
-  };
-
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px", margin: "auto" }}>
+    <div className="event-detail-container">
       <h2>Detalles del Evento</h2>
 
-      <label>Título:</label>
-      <input
-        type="text"
-        value={event.title}
-        onChange={(e) => setEvent({ ...event, title: e.target.value })}
-      />
+      {event.imageUrl && (
+        <img
+          src={event.imageUrl}
+          alt="Evento"
+          className="event-image"
+        />
+      )}
 
-      <label style={{ marginTop: "1rem" }}>Fecha:</label>
-      <input
-        type="date"
-        value={event.date}
-        onChange={(e) => setEvent({ ...event, date: e.target.value })}
-      />
+      <div className="event-info">
+        <p><strong>Título:</strong> {event.title}</p>
+        <p><strong>Fecha:</strong> {event.date}</p>
+        <p><strong>Tipo:</strong> {event.type}</p>
+        <p><strong>Estado:</strong> {status}</p>
+        <p><strong>Descripción:</strong> {event.description || "Sin descripción"}</p>
+      </div>
 
-      <label style={{ marginTop: "1rem" }}>Tipo de evento:</label>
-      <input
-        type="text"
-        value={event.type || ""}
-        onChange={(e) => setEvent({ ...event, type: e.target.value })}
-      />
+      {event.videoUrl && (
+        <div className="video-container">
+          <iframe
+            src={event.videoUrl}
+            title="Video del evento"
+            allowFullScreen
+          ></iframe>
+        </div>
+      )}
 
-      <label style={{ marginTop: "1rem" }}>Estado:</label>
-      <select
-        value={event.status}
-        onChange={(e) => setEvent({ ...event, status: e.target.value })}
-      >
-        <option value="Draft">Draft</option>
-        <option value="Published">Published</option>
-        <option value="Blocked">Blocked</option>
-      </select>
+      <div className="registered-users">
+        <h4>Usuarios registrados</h4>
+        <ul>
+          {event.users?.length > 0 ? (
+            event.users.map((u, idx) => <li key={idx}>{u}</li>)
+          ) : (
+            <li>No hay usuarios inscritos</li>
+          )}
+        </ul>
+      </div>
 
-      <p style={{ marginTop: "1rem" }}>
-        <strong>Inscritos:</strong> {event.registrants}
-      </p>
-      <p>
-        <strong>Rating promedio:</strong> {event.rating}
-      </p>
+      <p><strong>Rating promedio:</strong> {event.rating}</p>
 
-      {/* Botones de acción */}
-      <div style={{ marginTop: "2rem", display: "flex", gap: "1rem" }}>
-        <button onClick={handleSave}>💾 Guardar</button>
-        <button onClick={toggleBlock}>
-          {event.status === "Blocked" ? "🔓 Desbloquear" : "🔒 Bloquear"}
+      <div className="event-actions">
+        <button className="block-btn" onClick={toggleBlock}>
+          {status === "Blocked" ? "🔓 Desbloquear" : "🔒 Bloquear"}
         </button>
-        <button onClick={() => navigate("/panel")}>⬅️ Volver</button>
+        <button className="back-btn" onClick={() => navigate("/panel")}>⬅️ Volver</button>
       </div>
     </div>
   );
 };
 
 export default EventDetail;
+
+

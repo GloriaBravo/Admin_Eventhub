@@ -26,11 +26,11 @@ const EventTable = ({ searchTerm }) => {
       <table>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Registrants</th>
-            <th>Average Rating</th>
+            <th>Titulo</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Registrados</th>
+            <th>Rating</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -85,14 +85,6 @@ const EventTable = ({ searchTerm }) => {
           <strong>{Math.max(...events.map((e) => e.rating || 0))}</strong>
         </div>
       </div>
-
-      {/* === BOTÓN PARA CREAR EVENTO (sin funcionalidad aún) === */}
-      <button
-        className="new-event-btn"
-        onClick={() => navigate("/eventos/nuevo")}
-      >
-        New event
-      </button>
     </div>
   );
 };
