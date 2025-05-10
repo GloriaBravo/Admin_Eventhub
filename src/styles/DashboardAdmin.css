@@ -1,101 +1,200 @@
-.dashboard-wrapper {
+/* === Dashboard general === */
+.admin-dashboard-container {
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  background-color: #f7fafa;
 }
 
-.chart-container {
+/* Botones de cambio de gráfico */
+.chart-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 12px;
   justify-content: center;
+  margin-bottom: 20px;
 }
 
-.graph-panel {
-  flex: 1 1 600px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  padding: 24px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-  text-align: center;
-  min-width: 300px;
-}
-
-.chart-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.chart-buttons button {
+.chart-controls button {
+  font-size: 18px;
+  background-color: #1a7de5;
+  color: #fff;
   padding: 10px 14px;
-  font-size: 14px;
-  background-color: #1A7DE5;
-  color: white;
-  border: none;
   border-radius: 8px;
+  border: none;
   cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
-.chart-buttons button:hover {
+.chart-controls button:hover {
   background-color: #156cc2;
 }
 
+/* Contenedor gráfico + datos */
+.chart-wrapper {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* Contenedor del gráfico */
+.chart-display {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 10px;
+  flex: 1 1 60%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.06);
+  min-width: 320px;
+  text-align: center;
+}
+
+/* Panel derecho con usuarios y eventos */
+.data-list {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 10px;
+  flex: 1 1 35%;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.06);
+}
+
+.data-list h4 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #121417;
+}
+
+.data-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.data-list li {
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e8eb;
+  color: #444;
+}
+
+.data-list li strong {
+  color: #121417;
+}
+
+/* Botón de descarga */
+/*
 .download-btn {
-  margin-top: 10px;
-  background-color: #28BFE3;
+  align-self: flex-start;
+  background-color: #28bfe3;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: fit-content;
 }
 
 .download-btn:hover {
   background-color: #1a9ec0;
 }
+*/
 
-/* Panel de usuarios a la derecha */
-.user-data-panel {
-  flex: 1 1 300px;
+/* Resumen general */
+.resumen-general {
+  margin-top: 20px;
+  padding: 16px;
   background-color: #ffffff;
   border-radius: 10px;
-  padding: 24px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-  max-height: 420px;
-  overflow-y: auto;
-}
-
-.user-data-panel h4 {
-  margin-bottom: 12px;
+  font-size: 15px;
   color: #121417;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.04);
 }
 
-.user-item {
-  padding: 10px 0;
-  border-bottom: 1px solid #e5e8eb;
-  font-size: 14px;
-  color: #444;
+.resumen-general p {
+  margin: 8px 0;
 }
 
-.user-item strong {
-  color: #121417;
-}
-
-.summary-section {
-  margin-top: 20px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #121417;
-}
-
+/* Responsive */
 @media (max-width: 960px) {
-  .chart-container {
+  .chart-wrapper {
     flex-direction: column;
   }
 
-  .graph-panel,
-  .user-data-panel {
+  .chart-display,
+  .data-list {
     width: 100%;
   }
+
+  .download-btn {
+    align-self: center;
+  }
 }
+
+.event-list-enhanced {
+  margin-top: 2rem;
+}
+
+.event-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.event-card {
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border: 1px solid #dce3ea;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  transition: 0.2s ease;
+}
+
+.event-card:hover {
+  background-color: #eef5ff;
+  border-color: #a8c7ff;
+}
+
+.event-title {
+  font-weight: 600;
+  color: #121417;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-icon {
+  font-size: 18px;
+}
+
+.event-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #555;
+}
+
+.tag {
+  background-color: #e7f3ff;
+  padding: 3px 10px;
+  border-radius: 6px;
+  color: #0077cc;
+}
+
+.date {
+  color: #333;
+}
+.event-description {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #444;
+}
+/* === Dashboard Admin === */
+/* === Dashboard Admin === */

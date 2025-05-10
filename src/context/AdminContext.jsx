@@ -1,143 +1,68 @@
-import React, { createContext, useState, useEffect } from "react";
+// src/context/AdminContext.js
+import React, { createContext, useEffect, useState } from "react";
+import axios from "axios";
 
-// Crear el contexto
 export const AdminContext = createContext();
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "http://localhost:3001/api"; // Asegúrate que la fake API esté corriendo
 
 export const AdminProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
 
-  // Cargar datos iniciales desde la API
+  // 🔄 Carga inicial de datos desde la API
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(`${API_URL}/users`);
-        const data = await response.json();
-        setUsers(data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(`${API_URL}/events`);
-        const data = await response.json();
-        setEvents(data);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
     fetchUsers();
     fetchEvents();
   }, []);
 
-  const addUser = async (user) => {
+  const fetchUsers = async () => {
     try {
-      const response = await fetch(`${API_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      const newUser = await response.json();
-      setUsers((prev) => [...prev, newUser]);
-    } catch (error) {
-      console.error("Error adding user:", error);
+      const res = await axios.get(`${API_URL}/users`);
+      setUsers(res.data);
+    } catch (err) {
+      console.error("Error cargando usuarios:", err);
     }
   };
 
-  const updateUser = async (updatedUser) => {
+  const fetchEvents = async () => {
     try {
-      const response = await fetch(`${API_URL}/users/${updatedUser.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedUser),
-      });
-      const returnedUser = await response.json();
-      setUsers((prev) => prev.map((u) => (u.id === returnedUser.id ? returnedUser : u)));
-    } catch (error) {
-      console.error("Error updating user:", error);
+      const res = await axios.get(`${API_URL}/events`);
+      setEvents(res.data);
+    } catch (err) {
+      console.error("Error cargando eventos:", err);
     }
   };
 
-  const deleteUser = async (id) => {
-    try {
-      await fetch(`${API_URL}/users/${id}`, {
-        method: "DELETE",
-      });
-      setUsers((prev) => prev.filter((u) => u.id !== id));
-      // La API ya se encarga de eliminar eventos asociados, pero actualizamos el estado local de eventos también
-      setEvents((prev) => prev.filter((e) => e.ownerId !== id));
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-  };
-
-  const addEvent = async (event) => {
-    try {
-      const response = await fetch(`${API_URL}/events`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(event),
-      });
-      const newEvent = await response.json();
-      setEvents((prev) => [...prev, newEvent]);
-    } catch (error) {
-      console.error("Error adding event:", error);
-    }
-  };
-
+  // ✅ Actualizar un evento localmente y en la API
   const updateEvent = async (updatedEvent) => {
     try {
-      const response = await fetch(`${API_URL}/events/${updatedEvent.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedEvent),
-      });
-      const returnedEvent = await response.json();
-      setEvents((prev) => prev.map((e) => (e.id === returnedEvent.id ? returnedEvent : e)));
-    } catch (error) {
-      console.error("Error updating event:", error);
+      const res = await axios.put(`${API_URL}/events/${updatedEvent.id}`, updatedEvent);
+      setEvents((prev) =>
+        prev.map((e) => (e.id === updatedEvent.id ? res.data : e))
+      );
+    } catch (err) {
+      console.error("Error actualizando evento:", err);
     }
   };
 
+  // ✅ Eliminar un evento
   const deleteEvent = async (id) => {
     try {
-      await fetch(`${API_URL}/events/${id}`, {
-        method: "DELETE",
-      });
+      await axios.delete(`${API_URL}/events/${id}`);
       setEvents((prev) => prev.filter((e) => e.id !== id));
-    } catch (error) {
-      console.error("Error deleting event:", error);
+    } catch (err) {
+      console.error("Error eliminando evento:", err);
     }
   };
 
   return (
     <AdminContext.Provider
-      value={{
-        users,
-        events,
-        addUser,
-        updateUser,
-        deleteUser,
-        addEvent,
-        updateEvent,
-        deleteEvent,
-      }}
+      value={{ users, events, setEvents, updateEvent, deleteEvent }}
     >
       {children}
     </AdminContext.Provider>
   );
 };
-
+// ✅ Se ha añadido un contexto para manejar el estado de los usuarios y eventos
+// ✅ Se han añadido funciones para cargar, actualizar y eliminar eventos
