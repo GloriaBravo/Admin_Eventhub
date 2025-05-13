@@ -1,42 +1,55 @@
+// src/pages/UserManagement.jsx
 import React, { useState, useContext } from "react";
 import UserTable from "../components/UserTable";
-import UserForm from "../components/UserForm";
 import UserProfile from "../components/UserProfile";
 import { AdminContext } from "../context/AdminContext";
 
 const UserManagement = () => {
-  const { users, events, addUser, updateUser, deleteUser } = useContext(AdminContext);
+  // Obtenemos usuarios y eventos desde el contexto global
+  const { users, events, updateUser } = useContext(AdminContext);
 
-  const [userToEdit, setUserToEdit] = useState(null);
+  // Estado local para visualizar detalles del usuario
   const [userToView, setUserToView] = useState(null);
 
-  const handleSaveUser = (user) => {
-    if (userToEdit) {
-      updateUser({ ...user, id: userToEdit.id });
-      setUserToEdit(null);
-    } else {
-      addUser(user);
-    }
-  };
-
+  // ✅ Volver de la vista de perfil
   const goBack = () => {
     setUserToView(null);
   };
 
+  // ✅ Obtener eventos asociados a un usuario
   const getEventsByUser = (userId) => {
-    return events.filter((event) => event.ownerId === userId);
+    return events.filter((event) => {
+      if (Array.isArray(event.ownerIds)) return event.ownerIds.includes(userId);
+      return event.ownerId === userId;
+    });
+  };
+
+  // ✅ Cambiar estado bloqueado del usuario
+  const handleToggleBlock = (userId) => {
+    const user = users.find((u) => u.id === userId);
+    if (user) {
+      updateUser({ ...user, blocked: !user.blocked });
+    }
   };
 
   return (
     <div style={{ padding: "20px" }}>
       <h2>Gestión de Usuarios</h2>
+
       {userToView ? (
-        <UserProfile user={userToView} onBack={goBack} events={getEventsByUser(userToView.id)} />
+        // ✅ Vista de perfil de usuario
+        <UserProfile
+          user={userToView}
+          onBack={goBack}
+          events={getEventsByUser(userToView.id)}
+        />
       ) : (
-        <>
-          <UserForm onAddUser={handleSaveUser} userToEdit={userToEdit} />
-          <UserTable users={users} onDelete={deleteUser} onEdit={setUserToEdit} onView={setUserToView} />
-        </>
+        // ✅ Tabla de usuarios sin formulario
+        <UserTable
+          users={users}
+          onToggleBlock={handleToggleBlock}
+          onView={setUserToView}
+        />
       )}
     </div>
   );
