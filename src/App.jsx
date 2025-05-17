@@ -15,8 +15,8 @@ import AdminPanel from "./pages/AdminPanel";
 import Login from "./pages/Login";
 import EventDetail from "./pages/EventDetail";
 import AdminGestion from "./pages/AdminGestion"; // ✅ nuevo
-
-
+import AdminFormPage from "./pages/AdminFormPage";
+import AdminTablePage from "./pages/AdminTablePage";
 // Componentes compartidos
 import Sidebar from "./components/Sidebar";
 
@@ -47,6 +47,8 @@ function App() {
               <Route path="/eventos" element={<EventManagement />} />
               <Route path="/panel" element={<AdminPanel />} />
               <Route path="/eventos/:id" element={<EventDetail />} />
+              <Route path="/admin/registrar" element={<AdminFormPage />} />
+              <Route path="/admin/lista" element={<AdminTablePage />} />
               <Route
                 path="/gestionar-administradores"
                 element={<AdminGestion />}

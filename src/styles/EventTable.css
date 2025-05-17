@@ -10,16 +10,14 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  color: var(--text-color); /* 👈 importante */
+  color: var(--text-color);
 }
 
 thead {
-  background-color: var(--header-bg); /* mejora el contraste */
+  background-color: var(--header-bg);
   color: var(--text-color);
   font-weight: bold;
 }
-
-
 
 th, td {
   padding: 10px;
@@ -27,6 +25,7 @@ th, td {
   border-bottom: 1px solid #ccc;
 }
 
+/* === ESTADO DEL EVENTO === */
 .status.published {
   color: white;
   background-color: #28a745;
@@ -41,9 +40,37 @@ th, td {
   border-radius: 4px;
 }
 
-.actions {
-  color: #007bff;
+.status.blocked {
+  color: white;
+  background-color: #dc3545;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* === BOTONES DE ACCIONES === */
+.actions button {
+  margin-right: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  color: white;
+}
+
+/* Botón Ver */
+.actions button:nth-child(1) {
+  background-color: #007bff;
+}
+
+/* Botón Bloquear */
+.actions button.block {
+  background-color: #dc3545;
+}
+
+/* Botón Desbloquear */
+.actions button.unblock {
+  background-color: #28a745;
 }
 
 .summary {
@@ -61,4 +88,3 @@ th, td {
   border-radius: 6px;
   cursor: pointer;
 }
-
