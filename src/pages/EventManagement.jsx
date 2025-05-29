@@ -41,6 +41,24 @@ const EventManagement = () => {
     deleteEvent(id);
   };
 
+  // Función para formatear fecha
+  const formatDate = (dateString) => {
+    if (!dateString) return "No definida";
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  // Función para mostrar categorías de forma legible
+  const formatCategories = (categories) => {
+    if (!categories || categories.length === 0) return "Sin categorías";
+    return categories.join(", ");
+  };
+
+  // Función para formatear el tipo de entrada
+  const formatTicketType = (ticketType) => {
+    if (!ticketType) return "No definido";
+    return ticketType === "free" ? "Gratis" : "De pago";
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <h2>Gestión de Eventos</h2>
@@ -68,6 +86,13 @@ const EventManagement = () => {
         <thead>
           <tr>
             <th style={{ borderBottom: "1px solid #ccc" }}>Título</th>
+            <th style={{ borderBottom: "1px solid #ccc" }}>Tipo</th>
+            <th style={{ borderBottom: "1px solid #ccc" }}>Estado</th>
+            <th style={{ borderBottom: "1px solid #ccc" }}>Fechas</th>
+            <th style={{ borderBottom: "1px solid #ccc" }}>Ubicación</th>
+            <th style={{ borderBottom: "1px solid #ccc" }}>Categorías</th>
+            <th style={{ borderBottom: "1px solid #ccc" }}>Privacidad</th>
+            <th style={{ borderBottom: "1px solid #ccc" }}>Entrada</th>
             <th style={{ borderBottom: "1px solid #ccc" }}>Responsable</th>
             <th style={{ borderBottom: "1px solid #ccc" }}>Acciones</th>
           </tr>
@@ -78,6 +103,26 @@ const EventManagement = () => {
             return (
               <tr key={event.id}>
                 <td>{event.title}</td>
+                <td>{event.type || "No definido"}</td>
+                <td>
+                  <span style={{ 
+                    padding: "3px 8px", 
+                    borderRadius: "4px", 
+                    backgroundColor: event.status?.nameState === "Active" ? "#4caf50" : 
+                                     event.status?.nameState === "Blocked" ? "#f44336" : "#9e9e9e",
+                    color: "white",
+                    fontSize: "0.8rem"
+                  }}>
+                    {event.status?.nameState || "Pendiente"}
+                  </span>
+                </td>
+                <td>
+                  {formatDate(event.start)} - {formatDate(event.end)}
+                </td>
+                <td>{event.location?.address || "No definida"}</td>
+                <td>{formatCategories(event.categories)}</td>
+                <td>{event.privacy || "No definida"}</td>
+                <td>{formatTicketType(event.ticketType)}</td>
                 <td>{owner ? owner.name : "Usuario eliminado"}</td>
                 <td>
                   <button onClick={() => handleEdit(event)}>Editar</button>

@@ -1,4 +1,4 @@
-// Sidebar.jsx actualizado con ancho reducido y correcciones de hover
+// Sidebar.jsx
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,9 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Sidebar.css";
+
+// ✅ Importa tu nuevo logo
+import logo from "../assets/logo-eventhub.png";
 
 const Sidebar = ({ onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,7 +49,8 @@ const Sidebar = ({ onLogout }) => {
         <button className="close-btn" onClick={closeMenu}>✖</button>
 
         <div className="sidebar-header">
-          <img src="/logo.svg" alt="EventHub Logo" className="logo" />
+          {/* ✅ Nuevo logo importado */}
+          <img src={logo} alt="EventHub Logo" className="logo-img" />
           <span className="app-name">EventHub</span>
         </div>
 
@@ -70,3 +74,4 @@ const Sidebar = ({ onLogout }) => {
 };
 
 export default Sidebar;
+

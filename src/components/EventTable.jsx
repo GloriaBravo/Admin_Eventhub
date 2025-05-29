@@ -1,31 +1,60 @@
+
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/EventTable.css";
 import { AdminContext } from "../context/AdminContext";
 
 const EventTable = ({ searchTerm }) => {
-  const { events, updateEvent } = useContext(AdminContext);
+  const { events, loading, fetchEvents, changeEventStatus } = useContext(AdminContext);
   const navigate = useNavigate();
 
-  // 🔍 Filtro por búsqueda (título, tipo o estado)
+  React.useEffect(() => {
+    if (events.length === 0 && !loading) {
+      fetchEvents();
+    }
+    console.log("Eventos en EventTable:", events);
+  }, [events, loading, fetchEvents]);
+
   const filteredEvents = events.filter((event) => {
-    const text = `${event.title ?? ""} ${event.type ?? ""} ${event.status ?? ""}`.toLowerCase();
-    return text.includes(searchTerm.toLowerCase());
+    if (!event) return false;
+    const text = `${event.title || ""} ${event.type || ""} ${event.status?.nameState || ""}`.toLowerCase();
+    return text.includes((searchTerm || "").toLowerCase());
   });
 
-  // ✅ Navegar al detalle del evento
   const handleView = (id) => {
     navigate(`/eventos/${id}`);
   };
 
-  // 🔁 Cambiar estado entre bloqueado/publicado
-  const handleToggleBlock = (event) => {
-    const updatedEvent = {
-      ...event,
-      status: event.status === "Blocked" ? "Published" : "Blocked",
-    };
-    updateEvent(updatedEvent);
+  const handleToggleBlock = async (event) => {
+    try {
+      const newStatus = event.status?.nameState === "Blocked" ? "Active" : "Blocked";
+      await changeEventStatus(event.id, newStatus);
+      console.log(`Estado del evento ${event.id} cambiado a ${newStatus}`);
+    } catch (error) {
+      console.error("Error al cambiar el estado del evento:", error);
+      alert(`Error al cambiar el estado: ${error.message}`);
+    }
   };
+
+  const formatCategories = (categories) => {
+    if (!categories || categories.length === 0) return "Sin categorías";
+    return categories.join(", ");
+  };
+
+  const formatTicketType = (ticketType, price) => {
+    if (ticketType === "free") return "Gratis";
+    if (price && price.amount) return `$${price.amount} ${price.currency || ""}`;
+    return price ? `$${price}` : "De pago";
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "No definida";
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  if (loading) {
+    return <div className="loading-message">Cargando eventos...</div>;
+  }
 
   return (
     <div className="event-section">
@@ -33,10 +62,14 @@ const EventTable = ({ searchTerm }) => {
         <thead>
           <tr>
             <th>Título</th>
-            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Fechas</th>
+            <th>Ubicación</th>
+            <th>Categorías</th>
+            <th>Entrada</th>
+            <th>Privacidad</th>
             <th>Estado</th>
-            <th>Registrados</th>
-            <th>Rating</th>
+            <th>Organizador</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -44,29 +77,48 @@ const EventTable = ({ searchTerm }) => {
           {filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (
               <tr key={event.id}>
-                <td>{event.title}</td>
-                <td>{event.date}</td>
+                <td>{event.title || "Sin título"}</td>
+                <td>{event.type || "N/A"}</td>
+                <td>{formatDate(event.start)} - {formatDate(event.end)}</td>
                 <td>
-                  <span className={`status ${event.status?.toLowerCase() || "unknown"}`}>
-                    {event.status}
+                  {event.location ? (
+                    <>
+                      {event.location.address || "Sin dirección"} ({event.location.type || "N/A"})
+                    </>
+                  ) : "Sin ubicación"}
+                </td>
+                <td>{formatCategories(event.categories)}</td>
+                <td>{formatTicketType(event.ticketType, event.price)}</td>
+                <td>{event.privacy || "N/A"}</td>
+                <td>
+                  <span className={`status ${(event.status?.nameState || "unknown").toLowerCase()}`}>
+                    {event.status?.nameState || "Pendiente"}
                   </span>
                 </td>
-                <td>{event.registrants}</td>
-                <td>{event.rating}</td>
+                <td>{event.otherData?.organizer || "Sin organizador"}</td>
                 <td className="actions">
                   <button onClick={() => handleView(event.id)}>Ver</button>
                   <button
-                    className={event.status === "Blocked" ? "unblock" : "block"}
+                    className={event.status?.nameState === "Blocked" ? "unblock" : "block"}
                     onClick={() => handleToggleBlock(event)}
+                    style={{
+                      marginLeft: "8px",
+                      backgroundColor: event.status?.nameState === "Blocked" ? "#4CAF50" : "#e53935",
+                      color: "#fff",
+                      border: "none",
+                      padding: "6px 10px",
+                      borderRadius: "5px",
+                      cursor: "pointer"
+                    }}
                   >
-                    {event.status === "Blocked" ? "Desbloquear" : "Bloquear"}
+                    {event.status?.nameState === "Blocked" ? "Desbloquear" : "Bloquear"}
                   </button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6" style={{ textAlign: "center", padding: "1rem" }}>
+              <td colSpan="10" style={{ textAlign: "center", padding: "1rem" }}>
                 No hay eventos que coincidan con la búsqueda.
               </td>
             </tr>
@@ -84,5 +136,3 @@ const EventTable = ({ searchTerm }) => {
 };
 
 export default EventTable;
-// Este componente muestra una tabla de eventos con la opción de buscar por título, tipo o estado.
-// Permite ver detalles del evento y cambiar su estado entre bloqueado y publicado.

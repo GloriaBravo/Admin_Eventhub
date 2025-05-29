@@ -1,81 +1,68 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { AdminContext } from "../context/AdminContext";
-import "../styles/EventDetail.css";
+import React, { useEffect, useState } from "react";
 
-const EventDetail = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { events, updateEvent } = useContext(AdminContext);
-
-  const event = events.find((e) => e.id.toString() === id);
-  const [status, setStatus] = useState(event?.status || "Draft");
+const EventDetail = ({ eventId }) => {
+  const [event, setEvent] = useState(null);
 
   useEffect(() => {
-    if (!event) navigate("/panel");
-  }, [event, navigate]);
+    const fetchEvent = async () => {
+      try {
+        const response = await fetch(`https://tu-api.com/events/${eventId}`);
+        const data = await response.json();
+        setEvent(data);
+      } catch (error) {
+        console.error("Error fetching event:", error);
+      }
+    };
 
-  const toggleBlock = () => {
-    const newStatus = status === "Blocked" ? "Published" : "Blocked";
-    setStatus(newStatus);
-    updateEvent({ ...event, status: newStatus });
-  };
+    fetchEvent();
+  }, [eventId]);
 
   if (!event) return <p>Cargando evento...</p>;
 
   return (
-    <div className="event-detail-container">
-      <h2>Detalles del Evento</h2>
+    <div className="event-detail">
+      <h1>{event.title}</h1>
+      <p>{event.description}</p>
 
-      {event.imageUrl && (
-        <img
-          src={event.imageUrl}
-          alt="Evento"
-          className="event-image"
-        />
-      )}
+      <section>
+        <strong>Tipo:</strong> {event.type} | <strong>Privacidad:</strong> {event.privacy}
+      </section>
 
-      <div className="event-info">
-        <p><strong>Título:</strong> {event.title}</p>
-        <p><strong>Fecha:</strong> {event.date}</p>
-        <p><strong>Tipo:</strong> {event.type}</p>
-        <p><strong>Estado:</strong> {status}</p>
-        <p><strong>Descripción:</strong> {event.description || "Sin descripción"}</p>
-      </div>
+      <section>
+        <strong>Ubicación:</strong> {event.location.address} ({event.location.type})<br />
+        <strong>Fechas:</strong> {new Date(event.start).toLocaleString()} - {new Date(event.end).toLocaleString()}
+      </section>
 
-      {event.videoUrl && (
-        <div className="video-container">
-          <iframe
-            src={event.videoUrl}
-            title="Video del evento"
-            allowFullScreen
-          ></iframe>
+      <section>
+        <strong>Entradas:</strong> {event.ticketType === "free" ? "Gratis" : `$${event.price}`}<br />
+        <strong>Categorías:</strong> {event.categories.join(", ")}<br />
+        <strong>Aforo máximo:</strong> {event.maxAttendees}
+      </section>
+
+      <section>
+        <h3>Imágenes principales</h3>
+        {event.mainImages.map((img, idx) => (
+          <img key={idx} src={img.url} alt={img.description} width={300} />
+        ))}
+      </section>
+
+      <section>
+        <h3>Galería</h3>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+          {event.galleryImages.map((img, idx) => (
+            <img key={idx} src={img.url} alt={img.description} width={150} />
+          ))}
         </div>
-      )}
+      </section>
 
-      <div className="registered-users">
-        <h4>Usuarios registrados</h4>
-        <ul>
-          {event.users?.length > 0 ? (
-            event.users.map((u, idx) => <li key={idx}>{u}</li>)
-          ) : (
-            <li>No hay usuarios inscritos</li>
-          )}
-        </ul>
-      </div>
-
-      <p><strong>Rating promedio:</strong> {event.rating}</p>
-
-      <div className="event-actions">
-        <button className="block-btn" onClick={toggleBlock}>
-          {status === "Blocked" ? "🔓 Desbloquear" : "🔒 Bloquear"}
-        </button>
-        <button className="back-btn" onClick={() => navigate("/panel")}>⬅️ Volver</button>
-      </div>
+      <section>
+        <h3>Organizador</h3>
+        <p><strong>Nombre:</strong> {event.otherData.organizer}</p>
+        <p><strong>Contacto:</strong> {event.otherData.contact}</p>
+        <p><strong>Notas:</strong> {event.otherData.notes}</p>
+      </section>
     </div>
   );
 };
 
 export default EventDetail;
-
-

@@ -1,114 +1,104 @@
-import React, { useState, useContext } from "react";
+// src/pages/Login.jsx
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AdminContext } from "../context/AdminContext";
+import "./../styles/Login.css"; // 👈 importa el nuevo estilo
+import logo from "../assets/logo-eventhub.png"; // ajusta la ruta según tu carpeta
 
-// El componente Login ahora recibe onLogin como prop (viene desde App.jsx)
 const Login = ({ onLogin }) => {
-  const { users } = useContext(AdminContext); // Accede a la lista de usuarios desde el contexto
-
-  // Estado local para manejar los campos del formulario
-  const [formData, setFormData] = useState({ email: "", password: "" });
-
-  // Estado para alternar visibilidad de la contraseña
+  const [formData, setFormData] = useState({ userName: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-
-  // Estado para mostrar mensaje de error
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Manejador para actualizar el estado de email y password en tiempo real
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Alternar visibilidad de la contraseña
   const togglePassword = () => setShowPassword((prev) => !prev);
 
-  // Manejador cuando se envía el formulario
-  const handleSubmit = (e) => {
+  const parseJwt = (token) => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(atob(base64));
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    // Buscar un usuario con email, contraseña y rol de Administrador válidos
-    const foundUser = users.find(
-      (u) =>
-        u.email.trim() === formData.email.trim() &&
-        u.password === formData.password &&
-        u.role === "Administrador"
-    );
+    try {
+      const res = await fetch("https://backendeventhub.onrender.com/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    if (foundUser) {
-      // Guardar sesión en localStorage
-      localStorage.setItem("session", JSON.stringify(foundUser));
+      if (!res.ok) throw new Error("Credenciales incorrectas");
 
-      // ✅ Actualizar el estado de sesión en App.jsx (reacción inmediata)
-      if (onLogin) onLogin(foundUser);
+      const token = await res.text();
+      localStorage.setItem("token", token);
 
-      // Redirigir al dashboard
+      const decoded = parseJwt(token);
+      const username = decoded.sub;
+      const roleString = decoded.roles?.[0] || "";
+      const match = roleString.match(/nombreRol=(ROLE_[A-Z]+)/);
+      const userRole = match ? match[1] : "";
+
+      localStorage.setItem("userName", username);
+      localStorage.setItem("role", userRole);
+
+      onLogin?.({ token, userName: username, role: userRole });
       navigate("/dashboard");
-    } else {
-      // Mostrar error si no coincide
-      setError("Correo o contraseña inválidos, o no tiene permisos de administrador.");
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ padding: "3rem", maxWidth: "400px", margin: "auto" }}>
-      <h2 style={{ color: "var(--text-color)" }}>Iniciar sesión como Administrador</h2>
-
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          marginTop: "1rem",
-        }}
-      >
-        <input
-          type="email"
-          name="email"
-          placeholder="Correo electrónico"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-
-        <div style={{ position: "relative" }}>
+    <div className="login-container">
+      <div className="login-card">
+        <img src={logo} alt="EventHub Logo" className="logo" />
+        <h2>Iniciar sesión como Administrador</h2>
+        <form onSubmit={handleSubmit}>
           <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Contraseña"
-            value={formData.password}
+            type="text"
+            name="userName"
+            placeholder="Nombre de usuario"
+            value={formData.userName}
             onChange={handleChange}
             required
-            style={{ width: "100%", paddingRight: "2.5rem" }}
           />
-          {/* Botón para mostrar u ocultar contraseña */}
-          <span
-            onClick={togglePassword}
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "10px",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              fontSize: "1.1rem",
-            }}
-          >
-            {showPassword ? "🙈" : "👁️"}
-          </span>
-        </div>
-
-        <button type="submit">Ingresar</button>
-      </form>
-
-      {/* Mostrar mensaje de error si lo hay */}
-      {error && (
-        <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>
-      )}
+          <div style={{ position: "relative" }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Contraseña"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <span className="toggle-password" onClick={togglePassword}>
+              {showPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
+          <button type="submit" disabled={loading}>
+            {loading ? "Iniciando sesión..." : "Ingresar"}
+          </button>
+        </form>
+        {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+      </div>
     </div>
   );
 };
 
 export default Login;
+
