@@ -1,15 +1,17 @@
 // src/pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./../styles/Login.css"; // 👈 importa el nuevo estilo
-import logo from "../assets/logo-eventhub.png"; // ajusta la ruta según tu carpeta
+import "./../styles/Login.css";
+import logo from "../assets/logo-eventhub.png";
+import LoadingModal from "../components/LoadingModal";
+import { useNotification } from "../context/NotificationContext";
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({ userName: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { showError, showSuccess } = useNotification();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,7 +24,7 @@ const Login = ({ onLogin }) => {
       const base64Url = token.split(".")[1];
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       return JSON.parse(atob(base64));
-    } catch (error) {
+    } catch {
       return null;
     }
   };
@@ -30,10 +32,9 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
-      const res = await fetch("https://backendeventhub.onrender.com/auth/login", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -54,10 +55,11 @@ const Login = ({ onLogin }) => {
       localStorage.setItem("role", userRole);
 
       onLogin?.({ token, userName: username, role: userRole });
+      showSuccess("Inicio de sesión exitoso", { flow: "login" });
       navigate("/dashboard");
 
     } catch (error) {
-      setError(error.message);
+      showError(error.message, { flow: "login" });
     } finally {
       setLoading(false);
     }
@@ -65,6 +67,7 @@ const Login = ({ onLogin }) => {
 
   return (
     <div className="login-container">
+      {loading && <LoadingModal show={true} text="Iniciando sesión..." />}
       <div className="login-card">
         <img src={logo} alt="EventHub Logo" className="logo" />
         <h2>Iniciar sesión como Administrador</h2>
@@ -94,11 +97,9 @@ const Login = ({ onLogin }) => {
             {loading ? "Iniciando sesión..." : "Ingresar"}
           </button>
         </form>
-        {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
       </div>
     </div>
   );
 };
 
 export default Login;
-

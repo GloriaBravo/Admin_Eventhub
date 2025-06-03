@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+const API_URL = "https://backendeventhub.onrender.com/api";
 
 const EventDetail = ({ eventId }) => {
   const [event, setEvent] = useState(null);
@@ -6,7 +7,7 @@ const EventDetail = ({ eventId }) => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`https://tu-api.com/events/${eventId}`);
+        const response = await fetch(`${API_URL}/events/${eventId}`);
         const data = await response.json();
         setEvent(data);
       } catch (error) {

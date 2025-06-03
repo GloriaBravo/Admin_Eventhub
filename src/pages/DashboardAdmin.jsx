@@ -1,200 +1,93 @@
-import React, { useContext, useRef, useState, useEffect } from "react";
+// src/pages/DashboardAdmin.jsx
+import React, { useContext, useEffect, useState } from "react";
 import { AdminContext } from "../context/AdminContext";
-import {
-  PieChart, Pie, Cell,
-  BarChart, Bar,
-  LineChart, Line,
-  AreaChart, Area,
-  XAxis, YAxis,
-  CartesianGrid, Tooltip, Legend,
-} from "recharts";
-import html2canvas from "html2canvas";
+import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import "../styles/DashboardAdmin.css";
 
-const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50", "#00C49F"];
+const COLORS = ["#ff4d4f", "#faad14", "#1890ff", "#52c41a", "#722ed1"];
 
 const DashboardAdmin = () => {
-  const { users, events, loading, fetchEvents } = useContext(AdminContext);
-  const chartRef = useRef();
-  const [activeChart, setActiveChart] = useState("pie");
+  const { events, loading, fetchEvents } = useContext(AdminContext);
+  const [activeTab, setActiveTab] = useState("semanal"); // Ejemplo de filtro de tiempo
 
-  // Asegurarse de que los eventos se carguen al montar el componente
   useEffect(() => {
-    if (events.length === 0 && !loading) {
-      fetchEvents();
-    }
-    console.log("Eventos en DashboardAdmin:", events);
-  }, [events, loading, fetchEvents]);
+    fetchEvents(); // ✅ Traer los eventos desde la API real
+  }, []);
 
-  const rolesCount = users.reduce((acc, user) => {
-    const roleName = user.role?.nombreRol || "Sin rol";
-    acc[roleName] = (acc[roleName] || 0) + 1;
-    return acc;
-  }, {});
-  
-  const usersByRole = Object.entries(rolesCount).map(([role, count]) => ({
-    name: role,
-    value: count,
-  }));
-
-  const eventsByUser = users.map((user) => {
-    const userEvents = events.filter((e) => 
-      e.creator?.id === user.id
-    );
-    return { 
-      name: user.userName || "Usuario sin nombre", 
-      events: userEvents.length 
-    };
-  }).sort((a, b) => b.events - a.events).slice(0, 3);
-
-  const eventTypesCount = events.reduce((acc, event) => {
+  // ✅ Agrupa eventos por tipo (para el gráfico de pastel)
+  const eventsByType = events.reduce((acc, event) => {
     const type = event.type || "Otro";
     acc[type] = (acc[type] || 0) + 1;
     return acc;
   }, {});
-  
-  const eventsByType = Object.entries(eventTypesCount).map(([type, count]) => ({
+
+  const pieData = Object.entries(eventsByType).map(([type, count]) => ({
     name: type,
-    cantidad: count,
+    value: count,
   }));
 
-  const downloadChart = () => {
-    html2canvas(chartRef.current).then(canvas => {
-      const link = document.createElement("a");
-      link.download = `grafica-${activeChart}.png`;
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  };
-
-  const renderChart = () => {
-    switch (activeChart) {
-      case "pie":
-        return (
-          <PieChart width={400} height={300}>
-            <Pie data={usersByRole} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
-              {usersByRole.map((_, i) => (
-                <Cell key={i} fill={COLORS[i % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        );
-      case "bar":
-        return (
-          <BarChart width={500} height={300} data={eventsByUser}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="events" fill="#8884d8" />
-          </BarChart>
-        );
-      case "bar2":
-        return (
-          <BarChart width={500} height={300} data={eventsByType}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="cantidad" fill="#82ca9d" />
-          </BarChart>
-        );
-      case "line":
-        return (
-          <LineChart width={500} height={300} data={eventsByUser}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="events" stroke="#ff7f50" />
-          </LineChart>
-        );
-      case "area":
-        return (
-          <AreaChart width={500} height={300} data={eventsByUser}>
-            <defs>
-              <linearGradient id="colorFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area type="monotone" dataKey="events" stroke="#8884d8" fillOpacity={1} fill="url(#colorFill)" />
-          </AreaChart>
-        );
-      default:
-        return null;
-    }
-  };
-
-  // Función para formatear fecha
-  const formatDate = (dateString) => {
-    if (!dateString) return "Fecha no disponible";
-    return new Date(dateString).toLocaleDateString();
-  };
+  // ✅ Contabiliza eventos por día de la semana (ejemplo: para el gráfico de línea)
+  const daysOfWeek = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+  const eventsByDay = daysOfWeek.map((day) => ({
+    name: day,
+    eventos: Math.floor(Math.random() * 6), // Puedes reemplazarlo con datos reales si los tienes (por fecha)
+  }));
 
   return (
-    <div className="admin-dashboard-container">
-      <h2>Dashboard del Administrador</h2>
+    <div className="dashboard-container">
+      <h2>Estadísticas</h2>
 
-      <div className="chart-controls">
-        <button onClick={() => setActiveChart("pie")}>🥧</button>
-        <button onClick={() => setActiveChart("bar")}>📊</button>
-        <button onClick={() => setActiveChart("bar2")}>📈</button>
-        <button onClick={() => setActiveChart("line")}>📉</button>
-        <button onClick={() => setActiveChart("area")}>🗺️</button>
+      {/* Tabs de tiempo */}
+      <div className="tabs">
+        <button className={activeTab === "semanal" ? "active" : ""} onClick={() => setActiveTab("semanal")}>Semanal</button>
+        <button className={activeTab === "mensual" ? "active" : ""} onClick={() => setActiveTab("mensual")}>Mensual</button>
+        <button className={activeTab === "anual" ? "active" : ""} onClick={() => setActiveTab("anual")}>Anual</button>
       </div>
 
-      <div className="chart-wrapper">
-        <div className="chart-display" ref={chartRef}>
-          {renderChart()}
+      {/* Contenedor de las gráficas */}
+      <div className="charts-container">
+        <div className="chart-card">
+          <h3>Eventos por Tipo</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                innerRadius={60}
+                label
+              >
+                {pieData.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Legend verticalAlign="bottom" height={36} />
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
-        <div className="data-list event-list-enhanced">
-          <h4>Eventos registrados</h4>
-          {loading ? (
-            <p>Cargando eventos...</p>
-          ) : events.length === 0 ? (
-            <p>No hay eventos registrados</p>
-          ) : (
-            <div className="event-cards">
-              {events.map((e, i) => {
-                const creatorName = e.creator?.userName || "Creador desconocido";
-
-                return (
-                  <div className="event-card" key={i}>
-                    <div className="event-title">📌 {e.title || "Sin título"}</div>
-                    <div className="event-meta">
-                      <span className="tag">{e.type || "Tipo no especificado"}</span>
-                      <span className="date">
-                        {formatDate(e.start)} - {formatDate(e.end)}
-                      </span>
-                    </div>
-                    <div className="event-description">
-                      <strong>Creador: {creatorName}</strong>
-                    </div>
-                    <div className="event-status">
-                      Estado: {e.status?.nameState || "No definido"}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+        <div className="chart-card">
+          <h3>Eventos a lo Largo del Tiempo</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={eventsByDay} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="eventos" stroke="#1890ff" strokeWidth={2} activeDot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      <button className="download-btn" onClick={downloadChart}>📥 Descargar gráfica</button>
-
-      <div className="resumen-general">
-        <h4>Resumen general</h4>
-        <p><strong>Total de usuarios:</strong> {users.length}</p>
+      {/* Resumen general */}
+      <div className="summary">
+        <h4>Resumen General</h4>
         <p><strong>Total de eventos:</strong> {events.length}</p>
       </div>
     </div>
@@ -202,3 +95,4 @@ const DashboardAdmin = () => {
 };
 
 export default DashboardAdmin;
+

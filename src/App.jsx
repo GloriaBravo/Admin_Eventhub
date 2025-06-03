@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -7,14 +6,14 @@ import {
   Navigate,
 } from "react-router-dom";
 
-// Importación de vistas o páginas
+// Páginas
 import DashboardAdmin from "./pages/DashboardAdmin";
 import UserManagement from "./pages/UserManagement";
 import EventManagement from "./pages/EventManagement";
 import AdminPanel from "./pages/AdminPanel";
 import Login from "./pages/Login";
 import EventDetail from "./pages/EventDetail";
-import AdminGestion from "./pages/AdminGestion"; // ✅ nuevo
+import AdminGestion from "./pages/AdminGestion";
 import AdminFormPage from "./pages/AdminFormPage";
 import AdminTablePage from "./pages/AdminTablePage";
 // Componentes compartidos
@@ -52,8 +51,7 @@ function App() {
               <Route
                 path="/gestionar-administradores"
                 element={<AdminGestion />}
-              />{" "}
-              {/* ✅ nueva ruta */}
+              />
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="*" element={<Navigate to="/dashboard" />} />
             </Routes>
@@ -70,3 +68,4 @@ function App() {
 }
 
 export default App;
+

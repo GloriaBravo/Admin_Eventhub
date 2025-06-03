@@ -1,16 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import { AdminProvider } from "./context/AdminContext";
-import "./styles/index.css";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx';
+import './styles/index.css';
+import { AdminProvider } from './context/AdminContext.jsx';
+import { NotificationProvider } from './context/NotificationContext.jsx';
 
-// ✅ Registro global de iconos Font Awesome
-import "./icons/fontAwesome"; // ← asegúrate de que este archivo exista
-
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AdminProvider>
-      <App />
-    </AdminProvider>
+    <NotificationProvider>
+      <AdminProvider>
+        <App />
+      </AdminProvider>
+    </NotificationProvider>
   </React.StrictMode>
 );

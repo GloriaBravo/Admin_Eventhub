@@ -48,7 +48,7 @@ const AdminList = ({ admins, onBack }) => {
                       cursor: "pointer"
                     }}
                   >
-                    {admin.active ? "Bloquear" : "Desbloquear"}
+                    {admin.active ? "Activar" : "Desactivar"}
                   </button>
                 </td>
               </tr>

@@ -1,0 +1,203 @@
+/* Estilos mejorados para NotificationModal con animaciones avanzadas */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 60px;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+  transition: all 0.3s ease;
+}
+
+.modal-notification {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+  transform-origin: top center;
+}
+
+.modal-notification.entering {
+  animation-name: slideInDown;
+}
+
+.modal-notification.exiting {
+  animation-name: slideOutUp;
+}
+
+.notification-content {
+  text-align: center;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-content p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.notification-icon {
+  margin-right: 15px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s ease;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-button:hover {
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: scale(1.1);
+}
+
+/* Estilos específicos por tipo de notificación */
+.modal-success {
+  border-left: 5px solid #4caf50;
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+}
+
+.modal-success .notification-icon {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.modal-error {
+  border-left: 5px solid #f44336;
+  box-shadow: 0 8px 25px rgba(244, 67, 54, 0.2);
+}
+
+.modal-error .notification-icon {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+}
+
+.modal-warning {
+  border-left: 5px solid #ff9800;
+  box-shadow: 0 8px 25px rgba(255, 152, 0, 0.2);
+}
+
+.modal-warning .notification-icon {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+}
+
+.modal-info {
+  border-left: 5px solid #2196f3;
+  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.2);
+}
+
+.modal-info .notification-icon {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+}
+
+/* Animaciones */
+@keyframes slideInDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.modal-success.pulse {
+  animation: pulse 0.5s ease-in-out;
+}
+
+.modal-error.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Efecto de brillo para notificaciones importantes */
+.notification-glow {
+  box-shadow: 0 0 15px rgba(33, 150, 243, 0.7);
+  animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.7);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.9);
+  }
+}
+
+/* Transiciones suaves para todos los elementos */
+.modal-notification * {
+  transition: all 0.3s ease;
+}
